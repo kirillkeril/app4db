@@ -5,19 +5,22 @@ import { Clothes } from '../classes/Clothes';
 import { Food } from '../classes/food';
 import { Medicines } from '../classes/medicines';
 import { Other } from '../classes/other';
+import { IData } from '../interfaces/data';
 import { AddNewClothes, ClothesItem } from './ClothesItem';
 import { AddNewFood, FoodItem } from './FoodItem';
 import { AddNewMedicines, MedicinesItem } from './MedicinesItem';
 import { AddNewOther, OtherItem } from './OtherItem';
 
 interface DataListProps {
+    data: IData,
+    setData: (data: IData) => any,
     clothes: Clothes[],
     food: Food[],
     medicines: Medicines[],
     other: Other[]
 }
 
-export const DataList = ({clothes, food, medicines, other}: DataListProps) => {
+export const DataList = ({clothes, food, medicines, other, setData, data}: DataListProps) => {
     const [clothesDialog, setClothesDialog] = useState<boolean>(false);
     const [foodDialog, setFoodDialog] = useState<boolean>(false);
     const [medicinesDialog, setmedicinesDialog] = useState<boolean>(false);
@@ -39,7 +42,15 @@ export const DataList = ({clothes, food, medicines, other}: DataListProps) => {
                                         <Accordion>
                                             <AccordionSummary>{item.title}</AccordionSummary>
                                             <AccordionDetails>
-                                                <ClothesItem i={item} type={'Change'}/>
+                                                <ClothesItem 
+                                                            onDelete={(item) => {
+                                                                setData({
+                                                                    ...data,
+                                                                    clothes: data.clothes.filter(i => i.id !== item.id)
+                                                                })
+                                                            }} 
+                                                            i={item} 
+                                                            type={'Change'}/>
                                             </AccordionDetails>                                            
                                         </Accordion>                                        
                                     </ListItem>                                
@@ -48,7 +59,7 @@ export const DataList = ({clothes, food, medicines, other}: DataListProps) => {
                         }
                         </List>
                         <Button sx={{mt: '1rem'}} onClick={() => setClothesDialog(true)}>Добавить</Button>
-                        <AddNewClothes arr={clothes} item={new Clothes(-1, '', '', 0, -1,  [new Date().getFullYear(), new Date().getMonth(), new Date().getDay()].join('-'), 'Uni', '')} isOpen={clothesDialog} setIsOpen={setClothesDialog}/>
+                        <AddNewClothes data={data} setData={setData} arr={clothes} item={new Clothes(-1, '', '', 0, -1,  [new Date().getFullYear(), new Date().getMonth(), new Date().getDay()].join('-'), 'Uni', '')} isOpen={clothesDialog} setIsOpen={setClothesDialog}/>
                                     
                     </AccordionDetails>
                 </Accordion>
@@ -64,7 +75,14 @@ export const DataList = ({clothes, food, medicines, other}: DataListProps) => {
                                         <Accordion>
                                             <AccordionSummary>{item.title}</AccordionSummary>
                                             <AccordionDetails>
-                                                <FoodItem i={item} type={'Change'}/>
+                                                <FoodItem  
+                                                            onDelete={(item) => {
+                                                                setData({
+                                                                    ...data,
+                                                                    food: data.food.filter(i => i.id !== item.id)
+                                                                })
+                                                            }} 
+                                                            i={item} type={'Change'}/>
                                             </AccordionDetails>                                            
                                         </Accordion>                                        
                                     </ListItem>                                
@@ -73,7 +91,7 @@ export const DataList = ({clothes, food, medicines, other}: DataListProps) => {
                         }
                         </List>
                         <Button sx={{mt: '1rem'}} onClick={() => {setFoodDialog(true)}}>Добавить</Button>
-                        <AddNewFood arr={food} item={new Food(-1, '', '', 0, -1,  [new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDay()].join('-'), '')} isOpen={foodDialog} setIsOpen={setFoodDialog}/>
+                        <AddNewFood data={data} setData={setData} arr={food} item={new Food(-1, '', '', 0, -1,  [new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDay()].join('-'), '')} isOpen={foodDialog} setIsOpen={setFoodDialog}/>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion>
@@ -88,7 +106,14 @@ export const DataList = ({clothes, food, medicines, other}: DataListProps) => {
                                         <Accordion>
                                             <AccordionSummary>{item.title}</AccordionSummary>
                                             <AccordionDetails>
-                                                <MedicinesItem i={item} type={'Change'}/>
+                                                <MedicinesItem
+                                                            onDelete={(item) => {
+                                                                setData({
+                                                                    ...data,
+                                                                    medicines: data.medicines.filter(i => i.id !== item.id)
+                                                                })
+                                                            }} 
+                                                            i={item} type={'Change'}/>
                                             </AccordionDetails>                                            
                                         </Accordion>                                        
                                     </ListItem>                                
@@ -112,7 +137,14 @@ export const DataList = ({clothes, food, medicines, other}: DataListProps) => {
                                         <Accordion>
                                             <AccordionSummary>{item.title}</AccordionSummary>
                                             <AccordionDetails>
-                                                <OtherItem i={item} type={'Change'}/>
+                                                <OtherItem 
+                                                            onDelete={(item) => {
+                                                                setData({
+                                                                    ...data,
+                                                                    other: data.other.filter(i => i.id !== item.id)
+                                                                })
+                                                            }}  
+                                                            i={item} type={'Change'}/>
                                             </AccordionDetails>                                            
                                         </Accordion>                                        
                                     </ListItem>                                

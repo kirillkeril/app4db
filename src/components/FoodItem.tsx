@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Food } from "../classes/food";
 import { Item } from '../classes/Item';
+import { IData } from '../interfaces/data';
 
 export const FoodItem = ({i, type, onSave, onDelete} : {i: Food, type: 'Change' | 'Add', onDelete?: (i: Item) => any, onSave?: (i: Item) => any}) => {
     const [item, setItem] = useState<Food>(i);
@@ -106,7 +107,7 @@ export const FoodItem = ({i, type, onSave, onDelete} : {i: Food, type: 'Change' 
     
 }
 
-export const AddNewFood = ({arr, item, isOpen, setIsOpen} : {arr: Food[], item: Food, isOpen: boolean, setIsOpen: (isOpen: boolean) => any}) => {
+export const AddNewFood = ({arr, item, isOpen, setIsOpen, data, setData} : {arr: Food[], item: Food, isOpen: boolean, setIsOpen: (isOpen: boolean) => any, data: IData, setData: (data: IData) => any}) => {
     const [newItem, setNewItem] = useState<Food>(item);
 
     return(
@@ -118,11 +119,10 @@ export const AddNewFood = ({arr, item, isOpen, setIsOpen} : {arr: Food[], item: 
                     type={"Add"}
                     onSave={(item) => {
                         setIsOpen(false)
-                        arr.push(item as Food);
-                    }}
-                    onDelete={(item) => {
-                        setIsOpen(false)
-                        arr.push(item as Food);
+                        setData({
+                            ...data,
+                            food: [...data.food, item as Food]
+                        })                  
                     }}
                 />
             </DialogContent>

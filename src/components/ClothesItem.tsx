@@ -1,9 +1,10 @@
 import { Clothes } from "../classes/Clothes";
-import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonBase, Dialog, DialogContent, DialogTitle, Input, ListItem, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogContent, DialogTitle, ListItem, MenuItem, Select, TextField, Typography } from '@mui/material';
 import List from '@mui/material/List';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Item } from "../classes/Item";
+import { IData } from "../interfaces/data";
 
 export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Change' | 'Add', onSave?: (i: Item) => any, onDelete?: (i: Item) => any}) => {
     const [item, setItem] = useState<Clothes>(i);
@@ -119,7 +120,7 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
     
 }
 
-export const AddNewClothes = ({arr, item, isOpen, setIsOpen} : {arr: Clothes[], item: Clothes, isOpen: boolean, setIsOpen: (isOpen: boolean) => any}) => {
+export const AddNewClothes = ({arr, item, isOpen, setIsOpen,data, setData} : {arr: Clothes[], item: Clothes, isOpen: boolean, setIsOpen: (isOpen: boolean) => any, data: IData, setData: (data: IData) => any}) => {
     const [newItem, setNewItem] = useState<Clothes>(item);
 
     return(
@@ -131,11 +132,10 @@ export const AddNewClothes = ({arr, item, isOpen, setIsOpen} : {arr: Clothes[], 
                 type={"Add"}
                 onSave={(item) => {
                     setIsOpen(false)
-                    arr.push(item as Clothes);
-                }}
-                onDelete={(item) => {
-                    setIsOpen(false)
-                    arr.push(item as Clothes);
+                    setData({
+                        ...data,
+                        clothes: [...data.clothes, item as Clothes]
+                    })                  
                 }}
                 />
             </DialogContent>
