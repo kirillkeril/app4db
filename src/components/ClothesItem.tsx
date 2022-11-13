@@ -25,10 +25,12 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
         switch (type) {
             case 'Change':
                 await axios.patch('http://localhost:8000/api/update_clothes/'+item.id+'/', {...item})
+                if (onSave !== undefined) onSave(item);
                 break;
             default:
                 await axios.put('http://localhost:8000/api/new_clothes/', {...item});
                 if (onSave !== undefined) onSave(item);
+                break;
         }
     }
 

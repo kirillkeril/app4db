@@ -1,12 +1,13 @@
-import { Clothes } from "../classes/Clothes";
-import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonBase, Dialog, DialogContent, DialogTitle, Input, ListItem, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogContent, DialogTitle, ListItem, TextField, Typography } from '@mui/material';
 import List from '@mui/material/List';
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Item } from "../classes/Item";
-import { Other } from "../classes/other";
+import { Food } from "../classes/food";
+import { Item } from '../classes/Item';
+import { IData } from '../interfaces/data';
+import { Other } from '../classes/other';
 
-export const OtherItem = ({i, type, onSave, onDelete} : {i: Other, type: 'Change' | 'Add', onSave?: (i: Item) => any, onDelete?: (i: Item) => any}) => {
+export const OtherItem = ({i, type, onSave, onDelete} : {i: Other, type: 'Change' | 'Add', onDelete?: (i: Item) => any, onSave?: (i: Item) => any}) => {
     const [item, setItem] = useState<Other>(i);
     const [err, setErr] = useState<boolean>(false);
 
@@ -24,11 +25,15 @@ export const OtherItem = ({i, type, onSave, onDelete} : {i: Other, type: 'Change
     const handleSubmit = async () => {
         switch (type) {
             case 'Change':
+                console.log(item);
+                
                 await axios.patch('http://localhost:8000/api/update_other/'+item.id+'/', {...item})
+                if (onSave !== undefined) onSave(item);
                 break;
             default:
                 await axios.put('http://localhost:8000/api/new_other/', {...item});
                 if (onSave !== undefined) onSave(item);
+                break;
         }
     }
 
@@ -80,7 +85,7 @@ export const OtherItem = ({i, type, onSave, onDelete} : {i: Other, type: 'Change
                 </ListItem>
 
                 <ListItem>
-                    Описание: <TextField error={item.description.trim() == ""} required sx={{ml: '1rem', width: "5rem"}} type='text' value={item.description}
+                    Описание: <TextField error={item.description.trim() == ""} required sx={{ml: '1rem', width: "auto"}} type='text' value={item.description}
                                                 onChange={e => {
                                                         setItem({...item, description: e.target.value})
                                                     }
@@ -100,30 +105,30 @@ export const OtherItem = ({i, type, onSave, onDelete} : {i: Other, type: 'Change
                 <Button disabled={err} onClick={handleSubmit}>Сохранить</Button>
                 {type == 'Change' && <Button color="warning" onClick={handleDelete}>Удалить</Button>}
             </div>
+            
             <Typography sx={{color: 'red'}}>{err ? "Сохранение невозможно" : ''}</Typography>
         </>
     );
     
 }
 
-export const AddNewOther = ({arr, item, isOpen, setIsOpen} : {arr: Other[], item: Other, isOpen: boolean, setIsOpen: (isOpen: boolean) => any}) => {
+export const AddNewOther = ({arr, item, isOpen, setIsOpen, data, setData} : {arr: Other[], item: Other, isOpen: boolean, setIsOpen: (isOpen: boolean) => any, data: IData, setData: (data: IData) => any}) => {
     const [newItem, setNewItem] = useState<Other>(item);
 
     return(
         <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
             <DialogTitle>Добавить</DialogTitle>
             <DialogContent>
-            <OtherItem
-                i={newItem} 
-                type={"Add"}
-                onSave={(item) => {
-                    setIsOpen(false)
-                    arr.push(item as Other);
-                }}
-                onDelete={(item) => {
-                    setIsOpen(false)
-                    arr.push(item as Other);
-                }}
+                <OtherItem
+                    i={newItem} 
+                    type={"Add"}
+                    onSave={(item) => {
+                        setIsOpen(false)
+                        setData({
+                            ...data,
+                            other: [...data.other, item as Other]
+                        })                  
+                    }}
                 />
             </DialogContent>
         </Dialog>

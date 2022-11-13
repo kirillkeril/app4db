@@ -3,9 +3,9 @@ import List from '@mui/material/List';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Food } from "../classes/food";
-import { Medicines } from '../classes/medicines';
 import { Item } from '../classes/Item';
-import { FoodItem } from './FoodItem';
+import { IData } from '../interfaces/data';
+import { Medicines } from '../classes/medicines';
 
 export const MedicinesItem = ({i, type, onSave, onDelete} : {i: Medicines, type: 'Change' | 'Add', onDelete?: (i: Item) => any, onSave?: (i: Item) => any}) => {
     const [item, setItem] = useState<Medicines>(i);
@@ -25,11 +25,15 @@ export const MedicinesItem = ({i, type, onSave, onDelete} : {i: Medicines, type:
     const handleSubmit = async () => {
         switch (type) {
             case 'Change':
+                console.log(item);
+                
                 await axios.patch('http://localhost:8000/api/update_medicines/'+item.id+'/', {...item})
+                if (onSave !== undefined) onSave(item);
                 break;
             default:
                 await axios.put('http://localhost:8000/api/new_medicines/', {...item});
                 if (onSave !== undefined) onSave(item);
+                break;
         }
     }
 
@@ -108,7 +112,7 @@ export const MedicinesItem = ({i, type, onSave, onDelete} : {i: Medicines, type:
     
 }
 
-export const AddNewMedicines = ({arr, item, isOpen, setIsOpen} : {arr: Medicines[], item: Medicines, isOpen: boolean, setIsOpen: (isOpen: boolean) => any}) => {
+export const AddNewMedicines = ({arr, item, isOpen, setIsOpen, data, setData} : {arr: Medicines[], item: Medicines, isOpen: boolean, setIsOpen: (isOpen: boolean) => any, data: IData, setData: (data: IData) => any}) => {
     const [newItem, setNewItem] = useState<Medicines>(item);
 
     return(
@@ -120,11 +124,10 @@ export const AddNewMedicines = ({arr, item, isOpen, setIsOpen} : {arr: Medicines
                     type={"Add"}
                     onSave={(item) => {
                         setIsOpen(false)
-                        arr.push(item as Medicines);
-                    }}
-                    onDelete={(item) => {
-                        setIsOpen(false)
-                        arr.push(item as Medicines);
+                        setData({
+                            ...data,
+                            medicines: [...data.medicines, item as Medicines]
+                        })                  
                     }}
                 />
             </DialogContent>

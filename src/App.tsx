@@ -7,6 +7,7 @@ import { Medicines } from "./classes/medicines";
 import { Other } from "./classes/other";
 import { DataList } from "./components/DataList";
 import { IData } from "./interfaces/data";
+import { IBox } from "./interfaces/IBox";
 
 const initnal_data: IData = {
   clothes: [],
@@ -14,15 +15,22 @@ const initnal_data: IData = {
   medicines: [],
   other: []
 }
+const initial_box: IBox[] = []
 
 
 function App() {
-  const Context = React.createContext(initnal_data);
-
   const [data, setData] = useState<IData>(initnal_data);
+  const [boxes, setBoxes] = useState<IBox[]>(initial_box);
 
 
   const fetchData = async () => {
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+    
+    await axios.get('http://localhost:8000/api/get_boxes/').then(r => {
+      const t: IBox[] = r.data;
+      setBoxes(t);
+    })
+
     await axios.get('http://localhost:8000/api/get_items/').then(r => {
       const t: IData = r.data;
       const typedClothes: Clothes[] = t.clothes.map(e => new Clothes(e.id, e.title, e.amount, e.weight, e.boxNum, e.date, e.gender, e.size));
@@ -42,19 +50,15 @@ function App() {
   }
 
 
-  useEffect(() => {
+  useEffect(() => {    
     fetchData();
-  }, [data.clothes.length, data.food.length, data.medicines.length, data.other.length]);
-
-  useEffect(() => {
-    console.log(data);    
-  }, [fetchData]);
+  }, [data.clothes.length, data.food.length, data.medicines.length, data.other.length, boxes.length]);
 
   return (
-    <Context.Provider value={data}>
-      <DataList data={data} setData={setData} clothes={data.clothes} food={data.food} medicines={data.medicines} other={data.other}/>
+    <>
+      <DataList fetchData={fetchData} boxes={boxes} setBoxes={setBoxes} data={data} setData={setData} clothes={data.clothes} food={data.food} medicines={data.medicines} other={data.other}/>
 
-    </Context.Provider>
+    </>
   );    
 }
 
