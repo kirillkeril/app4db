@@ -1,5 +1,4 @@
 import axios from "axios";
-import React from "react";
 import { useEffect, useState } from "react";
 import { Clothes } from "./classes/Clothes";
 import { Food } from "./classes/food";
@@ -24,14 +23,13 @@ function App() {
 
 
   const fetchData = async () => {
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
     
-    await axios.get('http://localhost:8000/api/get_boxes/').then(r => {
+    await axios.get('https://vp-pspu.cf/api/get_boxes/').then(r => {
       const t: IBox[] = r.data;
       setBoxes(t);
     })
 
-    await axios.get('http://localhost:8000/api/get_items/').then(r => {
+    await axios.get('https://vp-pspu.cf/api/get_items/').then(r => {
       const t: IData = r.data;
       const typedClothes: Clothes[] = t.clothes.map(e => new Clothes(e.id, e.title, e.amount, e.weight, e.boxNum, e.date, e.gender, e.size));
       const typedFoods: Food[] = t.food.map(e => new Food(e.id, e.title, e.amount, e.weight, e.boxNum, e.date, e.expiration_date));

@@ -10,6 +10,7 @@ import { Food } from '../classes/food';
 import { Medicines } from '../classes/medicines';
 import { Other } from '../classes/other';
 import { IData } from '../interfaces/data';
+import { IBox } from '../interfaces/IBox';
 
 interface WarehouseProps {
     onSave: () => any,
@@ -18,10 +19,11 @@ interface WarehouseProps {
     clothes: Clothes[],
     food: Food[],
     medicines: Medicines[],
+    boxes: IBox[],
     other: Other[]
 }
 
-export const Warehouse = ({onSave, clothes, food, medicines, other, setData, data}: WarehouseProps) => {
+export const Warehouse = ({onSave, clothes, food, medicines, other, setData, data, boxes}: WarehouseProps) => {
     const [clothesDialog, setClothesDialog] = useState<boolean>(false);
     const [foodDialog, setFoodDialog] = useState<boolean>(false);
     const [medicinesDialog, setmedicinesDialog] = useState<boolean>(false);
@@ -41,7 +43,8 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                                         <Accordion>
                                             <AccordionSummary>{item.title}</AccordionSummary>
                                             <AccordionDetails>
-                                                <ClothesItem 
+                                                <ClothesItem
+                                                    boxes={boxes}
                                                             onSave={() => {
                                                                 onSave();
                                                             }}
@@ -77,7 +80,8 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                                         <Accordion>
                                             <AccordionSummary>{item.title}</AccordionSummary>
                                             <AccordionDetails>
-                                                <FoodItem  
+                                                <FoodItem
+                                                    boxes={boxes}  
                                                             onSave={() => {
                                                                 onSave();
                                                             }}
@@ -112,6 +116,7 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                                             <AccordionSummary>{item.title}</AccordionSummary>
                                             <AccordionDetails>
                                             <MedicinesItem
+                                                boxes={boxes}
                                                             onSave={() => {
                                                                 onSave();
                                                             }}
@@ -147,7 +152,10 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                                             <AccordionSummary>{item.title}</AccordionSummary>
                                             <AccordionDetails>
                                                 <OtherItem
-                                                            onSave={() => {}}
+                                                    boxes={boxes}
+                                                            onSave={() => {
+                                                                onSave();
+                                                            }}
                                                             onDelete={(item) => {
                                                                 setData({
                                                                     ...data,

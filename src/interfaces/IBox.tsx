@@ -7,7 +7,7 @@ export interface IBox {
     id: number
     description: string
     boxNumber: number
-    isPacked: false
+    isPacked: boolean
     clothes: Clothes[]
     food: Food[]
     medicines: Medicines[]

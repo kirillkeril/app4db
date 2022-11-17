@@ -5,15 +5,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Item } from "../classes/Item";
 import { IData } from "../interfaces/data";
+import { IBox } from "../interfaces/IBox";
 
-export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Change' | 'Add', onSave?: (i: Item) => any, onDelete?: (i: Item) => any}) => {
+export const ClothesItem = ({i, type, onSave, onDelete, boxes} : {i: Clothes, type: 'Change' | 'Add', onSave?: (i: Item) => any, onDelete?: (i: Item) => any, boxes?: IBox[]}) => {
     const [item, setItem] = useState<Clothes>(i);
     const [err, setErr] = useState<boolean>(false);
 
     const handleDelete = async () => {
         switch (type) {
             case 'Change':
-                await axios.delete('http://localhost:8000/api/delete/clothes/'+item.id+'/');
+                await axios.delete('https://vp-pspu.cf/api/delete/clothes/'+item.id+'/');
                 if (onDelete !== undefined) onDelete(item);
                 break;
             default:
@@ -24,11 +25,11 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
     const handleSubmit = async () => {
         switch (type) {
             case 'Change':
-                await axios.patch('http://localhost:8000/api/update_clothes/'+item.id+'/', {...item})
+                await axios.patch('https://vp-pspu.cf/api/update_clothes/'+item.id+'/', {...item})
                 if (onSave !== undefined) onSave(item);
                 break;
             default:
-                await axios.put('http://localhost:8000/api/new_clothes/', {...item});
+                await axios.put('https://vp-pspu.cf/api/new_clothes/', {...item});
                 if (onSave !== undefined) onSave(item);
                 break;
         }
@@ -50,7 +51,7 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
         <>
             <List>
                 <ListItem>
-                    Наименование: <TextField error={item.title.trim() == ""} required sx={{ml: '1rem'}} type='text' value={item.title}
+                    Наименование: <TextField disabled={boxes !== undefined && boxes?.find((v) => v.boxNumber == item.boxNum)?.isPacked !== false} error={item.title.trim() == ""} required sx={{ml: '1rem'}} type='text' value={item.title}
                                                 onChange={e => {
                                                         setItem({...item, title: e.target.value})
                                                     }
@@ -58,7 +59,7 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
                 </ListItem>
                 
                 <ListItem>
-                    Кол-во: <TextField error={parseInt(item.amount) <= 0} required sx={{ml: '1rem', width: "5rem"}} type='number' value={item.amount}
+                    Кол-во: <TextField disabled={boxes !== undefined && boxes?.find((v) => v.boxNumber == item.boxNum)?.isPacked !== false} error={parseInt(item.amount) <= 0} required sx={{ml: '1rem', width: "5rem"}} type='number' value={item.amount}
                                                 onChange={e => {
                                                         setItem({...item, amount: e.target.value})
                                                     }
@@ -66,7 +67,7 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
                 </ListItem>
 
                 <ListItem>
-                    Вес на единицу (кг): <TextField error={item.weight <= 0} required sx={{ml: '1rem', width: "5rem"}} type='number' value={item.weight}
+                    Вес на единицу (кг): <TextField disabled={boxes !== undefined && boxes?.find((v) => v.boxNumber == item.boxNum)?.isPacked !== false} error={item.weight <= 0} required sx={{ml: '1rem', width: "5rem"}} type='number' value={item.weight}
                                                 onChange={e => {
                                                         setItem({...item, weight: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value)})
                                                     }
@@ -74,7 +75,7 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
                 </ListItem>
 
                 <ListItem>
-                    Номер коробки: <TextField error={item.boxNum < -1} required sx={{ml: '1rem', width: "5rem"}} type='number' value={item.boxNum > -1 ? item.boxNum : ''}
+                    Номер коробки: <TextField disabled={boxes !== undefined && boxes?.find((v) => v.boxNumber == item.boxNum)?.isPacked !== false} error={item.boxNum < -1} required sx={{ml: '1rem', width: "5rem"}} type='number' value={item.boxNum > -1 ? item.boxNum : ''}
                                                 onChange={e => {                                                                
                                                         setItem({...item, boxNum: isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value)})
                                                     }
@@ -82,7 +83,7 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
                 </ListItem>
 
                 <ListItem>
-                    Размер: <TextField error={item.size.trim() == ""} required sx={{ml: '1rem', width: "5rem"}} type='text' value={item.size}
+                    Размер: <TextField disabled={boxes !== undefined && boxes?.find((v) => v.boxNumber == item.boxNum)?.isPacked !== false} error={item.size.trim() == ""} required sx={{ml: '1rem', width: "5rem"}} type='text' value={item.size}
                                                 onChange={e => {
                                                         setItem({...item, size: e.target.value})
                                                     }
@@ -90,7 +91,7 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
                 </ListItem>
 
                 <ListItem>
-                    Пол: <Select value={item.gender} autoWidth onChange={
+                    Пол: <Select disabled={boxes !== undefined && boxes?.find((v) => v.boxNumber == item.boxNum)?.isPacked !== false} value={item.gender} autoWidth onChange={
                         e => {
                             setItem({
                                 ...item, gender: String(e.target.value)
@@ -104,7 +105,7 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
                 </ListItem>
 
                 <ListItem>
-                    Дата получения: <TextField error={item.date.trim() == ""} required sx={{ml: '1rem', width: "auto"}} type='date' value={item.date}
+                    Дата получения: <TextField disabled={boxes !== undefined && boxes?.find((v) => v.boxNumber == item.boxNum)?.isPacked !== false} error={item.date.trim() == ""} required sx={{ml: '1rem', width: "auto"}} type='date' value={item.date}
                                                     onChange={e => {
                                                             setItem({...item, date: e.target.value})
                                                         }
@@ -113,8 +114,8 @@ export const ClothesItem = ({i, type, onSave, onDelete} : {i: Clothes, type: 'Ch
 
             </List>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Button disabled={err} onClick={handleSubmit}>Сохранить</Button>
-                {type == 'Change' && <Button color="warning" onClick={handleDelete}>Удалить</Button>}
+                <Button disabled={boxes !== undefined && boxes?.find((v) => v.boxNumber == item.boxNum)?.isPacked !== false || err} onClick={handleSubmit}>Сохранить</Button>
+                {type == 'Change' && <Button color="warning" onClick={handleDelete} disabled={boxes?.find((v) => v.boxNumber == item.boxNum)?.isPacked !== false}>Удалить</Button>}
             </div>
             <Typography sx={{color: 'red'}}>{err ? "Сохранение невозможно" : ''}</Typography>
         </>
