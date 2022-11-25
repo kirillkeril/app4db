@@ -6,6 +6,7 @@ import axios from "axios";
 import { Item } from "../classes/Item";
 import { IData } from "../interfaces/data";
 import { IBox } from "../interfaces/IBox";
+import { settings } from "../classes/settings";
 
 export const ClothesItem = ({i, type, onSave, onDelete, boxes} : {i: Clothes, type: 'Change' | 'Add', onSave?: (i: Item) => any, onDelete?: (i: Item) => any, boxes?: IBox[]}) => {
     const [item, setItem] = useState<Clothes>(i);
@@ -14,7 +15,7 @@ export const ClothesItem = ({i, type, onSave, onDelete, boxes} : {i: Clothes, ty
     const handleDelete = async () => {
         switch (type) {
             case 'Change':
-                await axios.delete('https://vp-pspu.cf/api/delete/clothes/'+item.id+'/');
+                await axios.delete(`${settings.url}delete/clothes/${item.id}/`);
                 if (onDelete !== undefined) onDelete(item);
                 break;
             default:
@@ -25,11 +26,11 @@ export const ClothesItem = ({i, type, onSave, onDelete, boxes} : {i: Clothes, ty
     const handleSubmit = async () => {
         switch (type) {
             case 'Change':
-                await axios.patch('https://vp-pspu.cf/api/update_clothes/'+item.id+'/', {...item})
+                await axios.patch(`${settings.url}update_clothes/${item.id}/`, {...item})
                 if (onSave !== undefined) onSave(item);
                 break;
             default:
-                await axios.put('https://vp-pspu.cf/api/new_clothes/', {...item});
+                await axios.put(`${settings.url}new_clothes/`, {...item});
                 if (onSave !== undefined) onSave(item);
                 break;
         }
@@ -38,9 +39,11 @@ export const ClothesItem = ({i, type, onSave, onDelete, boxes} : {i: Clothes, ty
     useEffect(() => {
         if(
             item.title.trim() == "" ||
-            parseInt(item.amount) <= 0 ||
-            item.weight <= 0 ||
-            item.boxNum < -1 ||
+            item.amount == '' ||
+            item.amount == '0' ||
+            item.weight < 0 ||
+            item.date.trim() == '' ||
+            item.gender.trim() == "" ||
             item.size.trim() == ""
         ) {
             setErr(true)

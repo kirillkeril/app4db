@@ -2,11 +2,11 @@ import { Button, Dialog, DialogContent, DialogTitle, ListItem, TextField, Typogr
 import List from '@mui/material/List';
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Food } from "../classes/food";
 import { Item } from '../classes/Item';
 import { IData } from '../interfaces/data';
 import { Other } from '../classes/other';
 import { IBox } from '../interfaces/IBox';
+import { settings } from '../classes/settings';
 
 export const OtherItem = ({i, type, onSave, onDelete, boxes} : {i: Other, type: 'Change' | 'Add', onDelete?: (i: Item) => any, onSave?: (i: Item) => any, boxes?: IBox[]}) => {
     const [item, setItem] = useState<Other>(i);
@@ -15,7 +15,7 @@ export const OtherItem = ({i, type, onSave, onDelete, boxes} : {i: Other, type: 
     const handleDelete = async () => {
         switch (type) {
             case 'Change':
-                await axios.delete('https://vp-pspu.cf/api/delete/other/'+item.id+'/');
+                await axios.delete(`${settings.url}delete/other/${item.id}/`);
                 if (onDelete !== undefined) onDelete(item);
                 break;
             default:
@@ -28,11 +28,11 @@ export const OtherItem = ({i, type, onSave, onDelete, boxes} : {i: Other, type: 
             case 'Change':
                 console.log(item);
                 
-                await axios.patch('https://vp-pspu.cf/api/update_other/'+item.id+'/', {...item})
+                await axios.patch(`${settings.url}update_other/${item.id}/`, {...item})
                 if (onSave !== undefined) onSave(item);
                 break;
             default:
-                await axios.put('https://vp-pspu.cf/api/new_other/', {...item});
+                await axios.put(`${settings.url}new_other/`, {...item});
                 if (onSave !== undefined) onSave(item);
                 break;
         }
@@ -41,9 +41,10 @@ export const OtherItem = ({i, type, onSave, onDelete, boxes} : {i: Other, type: 
     useEffect(() => {
         if(
             item.title.trim() == "" ||
-            parseInt(item.amount) <= 0 ||
-            item.weight <= 0 ||
-            item.boxNum < -1 ||
+            item.amount == '' ||
+            item.amount == '0' ||
+            item.weight < 0 ||
+            item.date.trim() == '' ||
             item.description.trim() == ""
         ) {
             setErr(true)

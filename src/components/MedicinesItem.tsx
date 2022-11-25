@@ -7,6 +7,7 @@ import { Item } from '../classes/Item';
 import { IData } from '../interfaces/data';
 import { Medicines } from '../classes/medicines';
 import { IBox } from '../interfaces/IBox';
+import { settings } from '../classes/settings';
 
 export const MedicinesItem = ({i, type, onSave, onDelete, boxes} : {i: Medicines, type: 'Change' | 'Add', onDelete?: (i: Item) => any, onSave?: (i: Item) => any, boxes?: IBox[]}) => {
     const [item, setItem] = useState<Medicines>(i);
@@ -15,7 +16,7 @@ export const MedicinesItem = ({i, type, onSave, onDelete, boxes} : {i: Medicines
     const handleDelete = async () => {
         switch (type) {
             case 'Change':
-                await axios.delete('https://vp-pspu.cf/api/delete/medicines/'+item.id+'/');
+                await axios.delete(`${settings.url}delete/medicines/${item.id}/`);
                 if (onDelete !== undefined) onDelete(item);
                 break;
             default:
@@ -28,11 +29,11 @@ export const MedicinesItem = ({i, type, onSave, onDelete, boxes} : {i: Medicines
             case 'Change':
                 console.log(item);
                 
-                await axios.patch('https://vp-pspu.cf/api/update_medicines/'+item.id+'/', {...item})
+                await axios.patch(`${settings.url}update_medicines/${item.id}/`, {...item})
                 if (onSave !== undefined) onSave(item);
                 break;
             default:
-                await axios.put('https://vp-pspu.cf/api/new_medicines/', {...item});
+                await axios.put(`${settings.url}new_medicines/`, {...item});
                 if (onSave !== undefined) onSave(item);
                 break;
         }
@@ -41,9 +42,10 @@ export const MedicinesItem = ({i, type, onSave, onDelete, boxes} : {i: Medicines
     useEffect(() => {
         if(
             item.title.trim() == "" ||
-            parseInt(item.amount) <= 0 ||
-            item.weight <= 0 ||
-            item.boxNum < -1 ||
+            item.amount == '' ||
+            item.amount == '0' ||
+            item.weight < 0 ||
+            item.date.trim() == '' ||
             item.appointment.trim() == ""
         ) {
             setErr(true)

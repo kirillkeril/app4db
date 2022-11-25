@@ -30,8 +30,10 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
     const [otherDialog, setOtherDialog] = useState<boolean>(false);
 
     return (
-        <>
-                   <Accordion>
+        <div style={{display:'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <h2 className='title'>Склад</h2>
+            <div className='container'>
+                <Accordion>
                     <AccordionSummary><h3>Одежда</h3></AccordionSummary>
                     <AccordionDetails>
                         <List>
@@ -64,7 +66,7 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                         }
                         </List>
                         <Button sx={{mt: '1rem'}} onClick={() => setClothesDialog(true)}>Добавить</Button>
-                        <AddNewClothes data={data} setData={setData} arr={clothes} item={new Clothes(-1, '', '', 0, -1,  [new Date().getFullYear(), new Date().getMonth(), new Date().getDay()].join('-'), 'Uni', '')} isOpen={clothesDialog} setIsOpen={setClothesDialog}/>
+                        <AddNewClothes data={data} setData={setData} arr={clothes} item={new Clothes(-1, '', '', 0, -1,  '', 'Uni', '')} isOpen={clothesDialog} setIsOpen={setClothesDialog}/>
                                     
                     </AccordionDetails>
                 </Accordion>
@@ -100,7 +102,7 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                         }
                         </List>
                         <Button sx={{mt: '1rem'}} onClick={() => {setFoodDialog(true)}}>Добавить</Button>
-                        <AddNewFood data={data} setData={setData} arr={food} item={new Food(-1, '', '', 0, -1,  [new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDay()].join('-'), '')} isOpen={foodDialog} setIsOpen={setFoodDialog}/>
+                        <AddNewFood data={data} setData={setData} arr={food} item={new Food(-1, '', '', 0, -1,  '', '')} isOpen={foodDialog} setIsOpen={setFoodDialog}/>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion>
@@ -136,7 +138,7 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                         }
                         </List>
                         <Button sx={{mt: '1rem'}} onClick={() => {setmedicinesDialog(true)}}>Добавить</Button>
-                        <AddNewMedicines data={data} setData={setData} arr={medicines} item={new Medicines(-1, '', '', 0, -1,  [new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDay()].join('-'), '')} isOpen={medicinesDialog} setIsOpen={setmedicinesDialog}/>
+                        <AddNewMedicines data={data} setData={setData} arr={medicines} item={new Medicines(-1, '', '', 0, -1,  '', '')} isOpen={medicinesDialog} setIsOpen={setmedicinesDialog}/>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion>
@@ -171,9 +173,10 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                         }
                         </List>
                         <Button sx={{mt: '1rem'}} onClick={() => {setOtherDialog(true)}}>Добавить</Button>
-                        <AddNewOther setData={setData} data={data} arr={other} item={new Other(-1, '', '', 0, -1,  [new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDay()].join('-'), '')} isOpen={otherDialog} setIsOpen={setOtherDialog}/>
+                        <AddNewOther setData={setData} data={data} arr={other} item={new Other(-1, '', '', 0, -1,  '', '')} isOpen={otherDialog} setIsOpen={setOtherDialog}/>
                     </AccordionDetails>
                 </Accordion>
-        </>
+            </div>
+        </div>
     );
 }

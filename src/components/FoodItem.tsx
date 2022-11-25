@@ -6,6 +6,7 @@ import { Food } from "../classes/food";
 import { Item } from '../classes/Item';
 import { IData } from '../interfaces/data';
 import { IBox } from '../interfaces/IBox';
+import { settings } from '../classes/settings';
 
 export const FoodItem = ({i, type, onSave, onDelete, boxes} : {i: Food, type: 'Change' | 'Add', onDelete?: (i: Item) => any, onSave?: (i: Item) => any, boxes?: IBox[]}) => {
     const [item, setItem] = useState<Food>(i);
@@ -14,7 +15,7 @@ export const FoodItem = ({i, type, onSave, onDelete, boxes} : {i: Food, type: 'C
     const handleDelete = async () => {
         switch (type) {
             case 'Change':
-                await axios.delete('https://vp-pspu.cf/api/delete/food/'+item.id+'/');
+                await axios.delete(`${settings.url}delete/food/${item.id}/`);
                 if (onDelete !== undefined) onDelete(item);
                 break;
             default:
@@ -27,11 +28,11 @@ export const FoodItem = ({i, type, onSave, onDelete, boxes} : {i: Food, type: 'C
             case 'Change':
                 console.log(item);
                 
-                await axios.patch('https://vp-pspu.cf/api/update_food/'+item.id+'/', {...item})
+                await axios.patch(`${settings.url}update_food/${item.id}/`, {...item})
                 if (onSave !== undefined) onSave(item);
                 break;
             default:
-                await axios.put('https://vp-pspu.cf/api/new_food/', {...item});
+                await axios.put(`${settings.url}new_food/`, {...item});
                 if (onSave !== undefined) onSave(item);
                 break;
         }
@@ -40,9 +41,10 @@ export const FoodItem = ({i, type, onSave, onDelete, boxes} : {i: Food, type: 'C
     useEffect(() => {
         if(
             item.title.trim() == "" ||
-            parseInt(item.amount) <= 0 ||
-            item.weight <= 0 ||
-            item.boxNum < -1 ||
+            item.amount == '' ||
+            item.amount == '0' ||
+            item.weight < 0 ||
+            item.date.trim() == '' ||
             item.expiration_date.trim() == ""
         ) {
             setErr(true)

@@ -1,10 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, NavLink} from "react-router-dom";
 import { Clothes } from "./classes/Clothes";
 import { Food } from "./classes/food";
 import { Medicines } from "./classes/medicines";
 import { Other } from "./classes/other";
+import { settings } from "./classes/settings";
+import { Boxes } from "./components/Boxes";
+import { Contacts } from "./components/Contacts";
 import { DataList } from "./components/DataList";
+import { Warehouse } from "./components/Warehouse";
 import { IData } from "./interfaces/data";
 import { IBox } from "./interfaces/IBox";
 
@@ -24,12 +29,12 @@ function App() {
 
   const fetchData = async () => {
     
-    await axios.get('https://vp-pspu.cf/api/get_boxes/').then(r => {
+    await axios.get(`${settings.url}get_boxes/`).then(r => {
       const t: IBox[] = r.data;
       setBoxes(t);
     })
 
-    await axios.get('https://vp-pspu.cf/api/get_items/').then(r => {
+    await axios.get(`${settings.url}get_items/`).then(r => {
       const t: IData = r.data;
       const typedClothes: Clothes[] = t.clothes.map(e => new Clothes(e.id, e.title, e.amount, e.weight, e.boxNum, e.date, e.gender, e.size));
       const typedFoods: Food[] = t.food.map(e => new Food(e.id, e.title, e.amount, e.weight, e.boxNum, e.date, e.expiration_date));
@@ -54,8 +59,20 @@ function App() {
 
   return (
     <>
-      <DataList fetchData={fetchData} boxes={boxes} setBoxes={setBoxes} data={data} setData={setData} clothes={data.clothes} food={data.food} medicines={data.medicines} other={data.other}/>
-
+      <Router>
+        <nav style={{width: '50%', margin: '20px auto 80px auto', display: 'flex', justifyContent: 'space-between'}}>
+          <NavLink className={'link'} to={'boxes'}>Коробки</NavLink>
+          <NavLink className={'link'} to={'warehouse'}>Склад</NavLink>
+          <NavLink className={'link'} to={'contacts'}>Контакты</NavLink>
+        </nav>
+        
+        <Routes>
+          <Route path="boxes" element={<Boxes boxes={boxes} fetchData={fetchData} setBoxes={setBoxes}/>}/>
+          <Route path="warehouse" element={<Warehouse boxes={boxes} onSave={fetchData} clothes={data.clothes} data={data} food={data.food} medicines={data.medicines} other={data.other} setData={setData} />} />
+          <Route path="contacts" element={<Contacts />}/>
+          <Route path='*' element={<Warehouse boxes={boxes} onSave={fetchData} clothes={data.clothes} data={data} food={data.food} medicines={data.medicines} other={data.other} setData={setData} />} />
+        </Routes>
+      </Router>
     </>
   );    
 }
