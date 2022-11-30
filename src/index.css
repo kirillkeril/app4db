@@ -34,3 +34,12 @@ code {
 .link:active {
   color: #be1900;
 }
+
+.pag {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.pagElem {
+  cursor: pointer;
+}
