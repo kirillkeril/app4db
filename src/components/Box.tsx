@@ -1,6 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, Dialog, List } from "@mui/material";
 import { useState } from "react";
 import { Item } from "../classes/Item";
+import { settings } from "../classes/settings";
 import { IBox } from "../interfaces/IBox";
 import { ItemElem } from "./Item";
 
@@ -13,7 +14,9 @@ export const BoxItem = ({b, w, setBoxes, boxes, wght, handleBoxUpdate, items, fe
         <Accordion>
             <AccordionSummary>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%'}}>
-                    <div>Коробка №{b.boxNumber}</div>
+                    <a className="link" href={`${settings.url}/print_box/${b.boxNumber}`}>
+                        Коробка №{b.boxNumber} (нажми для печати)
+                    </a>
                     <div>
                         Вес: {w.format(wght)}кг
                     </div>
