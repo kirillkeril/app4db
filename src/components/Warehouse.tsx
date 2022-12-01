@@ -20,126 +20,93 @@ interface WarehouseProps {
     food: Food[],
     medicines: Medicines[],
     boxes: IBox[],
-    other: Other[]
+    other: Other[],
+    pageF: number,
+    setPageF: (p: number) => any,
+    pageM: number,
+    setPageM: (p: number) => any,
+    pageC: number,
+    setPageC: (p: number) => any,
+    pageO: number,
+    setPageO: (p: number) => any,
+    maxPageF: number, 
+    setMaxPageF: (mp: number) => any,
+    maxPageM: number, 
+    setMaxPageM: (mp: number) => any,
+    maxPageC: number, 
+    setMaxPageC: (mp: number) => any,
+    maxPageO: number, 
+    setMaxPageO: (mp: number) => any,
+    s: boolean,
+    setS: (b: boolean) => any
 }
 
-export const Warehouse = ({onSave, clothes, food, medicines, other, setData, data, boxes}: WarehouseProps) => {
+export const Warehouse = ({
+        onSave, 
+        clothes, 
+        food, 
+        medicines, 
+        other, 
+        setData, 
+        data, 
+        boxes, 
+        maxPageC, 
+        maxPageF, 
+        maxPageM, 
+        maxPageO,
+        pageC,
+        pageF,
+        pageM,
+        pageO,
+        setMaxPageC,
+        setMaxPageF,
+        setMaxPageM,
+        setMaxPageO,
+        setPageC,
+        setPageF,
+        setPageM,
+        setPageO,
+        s,
+        setS
+    }: WarehouseProps) => {
     const [clothesDialog, setClothesDialog] = useState<boolean>(false);
     const [foodDialog, setFoodDialog] = useState<boolean>(false);
     const [medicinesDialog, setmedicinesDialog] = useState<boolean>(false);
     const [otherDialog, setOtherDialog] = useState<boolean>(false);
 
-    const [visibleArrC, setVisibleC] = useState<Clothes[]>([]);
-    const [visibleArrF, setVisibleF] = useState<Food[]>([]);
-    const [visibleArrM, setVisibleM] = useState<Medicines[]>([]);
-    const [visibleArrO, setVisibleO] = useState<Other[]>([]);
+    const [pagesC, setPagesC] = useState<number[]>([]);
+    const [pagesF, setPagesF] = useState<number[]>([]);
+    const [pagesM, setPagesM] = useState<number[]>([]);
+    const [pagesO, setPagesO] = useState<number[]>([]);
 
-    const [pagF, setPagF] = useState<number[]>([]);
-    const [pagM, setPagM] = useState<number[]>([]);
-    const [pagC, setPagC] = useState<number[]>([]);
-    const [pagO, setPagO] = useState<number[]>([]);
-
-    const [pageF, setPageF] = useState<number>(0);
-    const [pageM, setPageM] = useState<number>(0);
-    const [pageC, setPageC] = useState<number>(0);
-    const [pageO, setPageO] = useState<number>(0);
-
-    useEffect(() => {
-            let a: number[] = []
-            for (let i = 0; i < Math.round(clothes.length / 10); i++) {
-                a.push(i)
-            }
-            setPagC(a)        
-            a = []
-            for (let i = 0; i < Math.round(food.length / 10); i++) {
-                a.push(i)
-            }
-            setPagF(a)
-            a = []
-            for (let i = 0; i < Math.round(medicines.length / 10); i++) {
-                a.push(i)
-            }
-            setPagM(a)
-            a = []
-            for (let i = 0; i < Math.round(other.length / 10); i++) {
-                a.push(i)
-            }
-            setPagO(a)
-            a = []
-        }, [clothes.length, food.length, medicines.length, other.length]
+    useEffect(
+        () => {
+            for (let i = 1; i <= maxPageC; i++) {
+                pagesC.push(i);
+            }            
+        }, [maxPageC]
     );
-
-    useEffect( () => {
-            let a: Clothes[] = []
-            if(visibleArrC.length == 0) setVisibleC(clothes)
-            if(clothes.length > 0 && pagC.length > 0) {
-                console.log(clothes.length, pagC.length, pageC);
-                
-                for (let i = Math.round(pageC * (clothes.length / pagC.length)); i < Math.round(clothes.length / pagC.length) * (pageC + 1); i++) {
-                    console.log(i);
-                    if (i >= clothes.length) break;
-                    
-                    a.push(clothes[i])                
-                }
+    useEffect(
+        () => {
+            for (let i = 1; i <= maxPageF; i++) {
+                pagesF.push(i);
             }
-            if(a.length > 0) setVisibleC(a)
-            else setVisibleC(clothes)
-        }, [clothes.length, pagC, pageC]
+        }, [maxPageF]
     );
-
-    useEffect( () => {
-        let a: Food[] = []
-        if(visibleArrF.length == 0) setVisibleF(food)
-        if(food.length > 0 && pagF.length > 0) {
-            console.log(food.length, pagF.length, pageF);
-            
-            for (let i = Math.round(pageF * (food.length / pagF.length)); i < Math.round(food.length / pagF.length) * (pageF + 1); i++) {
-                console.log(i);
-                if (i >= food.length) break;
-                
-                a.push(food[i])                
+    useEffect(
+        () => {
+            for (let i = 1; i <= maxPageM; i++) {
+                pagesM.push(i);
             }
-        }
-        if(a.length > 0) setVisibleF(a)
-        else setVisibleF(food)
-        }, [food.length, pagF, pageF]
+        }, [maxPageM]
     );
-
-    useEffect( () => {
-        let a: Medicines[] = []
-        if(visibleArrM.length == 0) setVisibleM(medicines)
-        if(medicines.length > 0 && pagM.length > 0) {
-            console.log(medicines.length, pagM.length, pageM);
-            
-            for (let i = Math.round(pageM * (medicines.length / pagM.length)); i < Math.round(medicines.length / pagM.length) * (pageM + 1); i++) {
-                console.log(i);
-                if (i >= medicines.length) break;
-                
-                a.push(medicines[i])                
+    useEffect(
+        () => {
+            for (let i = 1; i <= maxPageO; i++) {
+                pagesO.push(i);
             }
-        }
-        if(a.length > 0) setVisibleM(a)
-        else setVisibleM(medicines)
-        }, [medicines.length, pagM, pageM]
+        }, [maxPageO]
     );
-    useEffect( () => {
-        let a: Other[] = []
-        if(visibleArrO.length == 0) setVisibleO(other)
-        if(other.length > 0 && pagO.length > 0) {
-            console.log(other.length, pagO.length, pageO);
-            
-            for (let i = Math.round(pageO * (other.length / pagO.length)); i < Math.round(other.length / pagO.length) * (pageO + 1); i++) {
-                console.log(i);
-                if (i >= other.length) break;
-                
-                a.push(other[i])                
-            }
-        }
-        if(a.length > 0) setVisibleO(a)
-        else setVisibleO(other)
-        }, [other.length, pagO, pageO]
-    );
-
 
     return (
         <div style={{display:'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -150,7 +117,7 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                     <AccordionDetails>
                         <List>
                         {
-                            visibleArrC.map((e) => {
+                            clothes.map((e) => {
                                 const item: Clothes = e;
                                 return (
                                     <ListItem key={e.id}>
@@ -161,12 +128,14 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                                                     boxes={boxes}
                                                             onSave={() => {
                                                                 onSave();
+                                                                setS(true)
                                                             }}
                                                             onDelete={(item) => {
                                                                 setData({
                                                                     ...data,
                                                                     clothes: data.clothes.filter(i => i.id !== item.id)
                                                                 })
+                                                                setS(true)
                                                             }} 
                                                             i={item} 
                                                             type={'Change'}/>
@@ -180,9 +149,9 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                         <Button sx={{mt: '1rem'}} onClick={() => setClothesDialog(true)}>Добавить</Button>
                         <AddNewClothes data={data} setData={setData} arr={clothes} item={new Clothes(-1, '', '', 0, -1,  '', 'Uni', '')} isOpen={clothesDialog} setIsOpen={setClothesDialog}/>
                         <div className='pag'>{
-                            pagC.map((e) => {
+                            pagesC.map((e) => {
                                 return (
-                                    <div onClick={() => setPageC(e)}>{e + 1}</div>
+                                    <div key={e} onClick={() => {setPageC(e); setS(true); onSave()}}>{e}</div>
                                 );
                             })
                         }</div>
@@ -193,7 +162,7 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                     <AccordionDetails>
                         <List>
                         {
-                            visibleArrF.map((e) => {
+                            food.map((e) => {
                                 const item: Food = e;
                                 return (
                                     <ListItem key={e.id}>
@@ -204,12 +173,14 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                                                     boxes={boxes}  
                                                             onSave={() => {
                                                                 onSave();
+                                                                setS(true)
                                                             }}
                                                             onDelete={(item) => {
                                                                 setData({
                                                                     ...data,
                                                                     food: data.food.filter(i => i.id !== item.id)
                                                                 })
+                                                                setS(true)
                                                             }} 
                                                             i={item} type={'Change'}/>
                                             </AccordionDetails>                                            
@@ -222,9 +193,9 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                         <Button sx={{mt: '1rem'}} onClick={() => {setFoodDialog(true)}}>Добавить</Button>
                         <AddNewFood data={data} setData={setData} arr={food} item={new Food(-1, '', '', 0, -1,  '', '')} isOpen={foodDialog} setIsOpen={setFoodDialog}/>
                         <div className='pag'>{
-                            pagF.map((e) => {
+                            pagesF.map((e) => {
                                 return (
-                                    <div onClick={() => setPageF(e)}>{e + 1}</div>
+                                    <div key={e} onClick={() => {setPageF(e); setS(true); onSave()}}>{e}</div>
                                 );
                             })
                         }</div>
@@ -235,7 +206,7 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                     <AccordionDetails>
                         <List>
                         {
-                            visibleArrM.map((e) => {
+                            medicines.map((e) => {
                                 const item: Medicines = e;
                                 return (
                                     <ListItem key={e.id}>
@@ -246,12 +217,14 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                                                 boxes={boxes}
                                                             onSave={() => {
                                                                 onSave();
+                                                                setS(true)
                                                             }}
                                                             onDelete={(item) => {
                                                                 setData({
                                                                     ...data,
                                                                     medicines: data.medicines.filter(i => i.id !== item.id)
                                                                 })
+                                                                setS(true)
                                                             }} 
                                                             i={item} 
                                                             type={'Change'}/>
@@ -265,9 +238,9 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                         <Button sx={{mt: '1rem'}} onClick={() => {setmedicinesDialog(true)}}>Добавить</Button>
                         <AddNewMedicines data={data} setData={setData} arr={medicines} item={new Medicines(-1, '', '', 0, -1,  '', '')} isOpen={medicinesDialog} setIsOpen={setmedicinesDialog}/>
                         <div className='pag'>{
-                            pagM.map((e) => {
+                            pagesM.map((e) => {
                                 return (
-                                    <div onClick={() => setPageM(e)}>{e + 1}</div>
+                                    <div key={e} onClick={() => {setPageM(e);setS(true); onSave()}}>{e}</div>
                                 );
                             })
                         }</div>
@@ -278,7 +251,7 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                     <AccordionDetails>
                         <List>
                         {
-                            visibleArrO.map((e) => {
+                            other.map((e) => {
                                 const item: Other = e;
                                 return (
                                     <ListItem key={e.id}>
@@ -289,12 +262,14 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                                                     boxes={boxes}
                                                             onSave={() => {
                                                                 onSave();
+                                                                setS(true)
                                                             }}
                                                             onDelete={(item) => {
                                                                 setData({
                                                                     ...data,
                                                                     other: data.other.filter(i => i.id !== item.id)
                                                                 })
+                                                                setS(true)
                                                             }} 
                                                             i={item} type={'Change'}/>
                                             </AccordionDetails>                                            
@@ -306,9 +281,9 @@ export const Warehouse = ({onSave, clothes, food, medicines, other, setData, dat
                         </List>
                         <Button sx={{mt: '1rem'}} onClick={() => {setOtherDialog(true)}}>Добавить</Button>
                         <div className='pag'>{
-                            pagO.map((e) => {
+                            pagesO.map((e) => {
                                 return (
-                                    <div onClick={() => setPageO(e)}>{e + 1}</div>
+                                    <div key={e} onClick={() => {setPageO(e); setS(true); onSave()}}>{e}</div>
                                 );
                             })
                         }</div>
